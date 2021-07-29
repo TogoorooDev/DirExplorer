@@ -53,9 +53,15 @@ func main(){
 		if fileinfo.IsDir(){
 			//io.WriteString(w, fmt.Sprintf("%s is a directory", dir))
 
-			pubdir_ends := pubdir[len(pubdir) - 1]
+			/*var pubdir_ends byte
 
-			fmt.Printf("Dir is %s\nDir ends with: %s\n", pubdir, string(pubdir_ends))
+			if pubdir == "/"{
+				pubdir_ends = '/'
+			}else {
+				pubdir_ends = pubdir[len(pubdir) - 1]
+			}
+
+			fmt.Printf("Dir is %s\nDir ends with: %s\n", pubdir, string(pubdir_ends))*/
 			/*
 			if string(pubdir_ends) != "/" {
 				redir := string(pubdir + "/")
@@ -87,29 +93,67 @@ func main(){
 			topmost_dir_arr := strings.Split(pubdir, "/")
 			topmost_dir := topmost_dir_arr[len(topmost_dir_arr) - 1]
 			dot_dot := strings.TrimSuffix(pubdir, topmost_dir + "/")
-			
-			dirstruct := struct {
-				Dirname string
-				Filenames []string
-				Dotdot string
-			}{	
-				Dirname: pubdir,
-				Filenames: files_arr,
-				Dotdot: dot_dot}
-			
 
-			tmpl, err := template.ParseFiles("templates/dir.html")
+			if r.Method == "POST" {
+				r.ParseForm()
+				thumbnail_string := r.FormValue("thumbnails")
 
-			if err != nil {
-				fmt.Println(err)
-				w.WriteHeader(http.StatusInternalServerError)
-				io.WriteString(w, "Render Error")
-				return
+				//fmt.Printf("thumbnail_bool: %s\n", thumbnail_bool)
+				var thumbnail_bool bool
+				if thumbnail_string == "false" {
+					thumbnail_bool = false
+				}else {
+					thumbnail_bool = true
+				}
+				
+				dirstruct := struct {
+					Dirname string
+					Filenames []string
+					Dotdot string
+					Thumbnails bool
+				}{	
+					Dirname: pubdir,
+					Filenames: files_arr,
+					Dotdot: dot_dot,
+					Thumbnails: thumbnail_bool}
 
+				tmpl, err := template.ParseFiles("templates/dir.html")
+
+				if err != nil {
+					fmt.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					io.WriteString(w, "Render Error")
+					return
+
+				}
+
+				tmpl.Execute(w, dirstruct)		
+			}else {
+				dirstruct := struct {
+					Dirname string
+					Filenames []string
+					Dotdot string
+					Thumbnails bool
+				}{	
+					Dirname: pubdir,
+					Filenames: files_arr,
+					Dotdot: dot_dot,
+					Thumbnails: true}
+				
+
+				tmpl, err := template.ParseFiles("templates/dir.html")
+
+				if err != nil {
+					fmt.Println(err)
+					w.WriteHeader(http.StatusInternalServerError)
+					io.WriteString(w, "Render Error")
+					return
+
+				}
+
+				tmpl.Execute(w, dirstruct)		
 			}
-
-			tmpl.Execute(w, dirstruct)
-
+			
 			//w.Header().Set("Content-Type", "text/plain")
 			//io.WriteString(w, out)
 

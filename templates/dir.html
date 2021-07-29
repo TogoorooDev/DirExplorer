@@ -25,9 +25,16 @@
 		<h1 class="title"><i>Directory of {{ .Dirname }}</i></h1>
 
 		<!-- Select Layouts  -->
-		<form action="{{.Dirname}}" method="POST">
-			<input type="submit" value="Enable Image Thumbnails" />
+		<form action="/{{.Dirname}}" method="POST">
+			{{if .Thumbnails}}
+				<input type="submit" value="Disable Image Thumbnails" />
+				<input type="hidden" id="thumbnails" name="thumbnails" value="false" />
+			{{else}}
+				<input type="submit" value="Enable Image Thumbnails" />
+				<input type="hidden" id="thumbnails" name="thumbnails" value="true" />
+			{{end }}
 		</form>
+		
 		<!-- Display -->
 
 		<ul>
