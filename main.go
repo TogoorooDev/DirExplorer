@@ -10,16 +10,20 @@ import (
 	"html/template"
 )
 
+type fileinfo_internal struct{
+	Name string
+	Ext string
+	Dir bool
+	
+}
+
 func main(){
 	// Config
 
 	// The directory to serve
 	const directory = "example/"
 
-	// The route to start the directory from. This must end with /
-	//const route = "/example/"
-
-	// The port to run server on. You may want to make this different from 
+	// The port to run server on. You may want to make this different from 80
 	const port = ":8080"
 
 	handler := http.NewServeMux()
@@ -78,9 +82,9 @@ func main(){
 				io.WriteString(w, err.Error())
 			}
 
-			var files_arr []string
+			//var files_arr []string
 
-			for _, file := range files {
+			/*for _, file := range files {
 				var filename string
 				if file.IsDir() {
 					filename = file.Name() + "/"
@@ -88,6 +92,25 @@ func main(){
 					filename = file.Name()
 				}
 				files_arr = append(files_arr, filename)
+			}*/
+
+			var fileinfo_arr []fileinfo_internal
+			
+			for _, fileinfo := range files {
+				var ext string
+				if strings.Contains(fileinfo.Name(), ".") {
+					exts := strings.Split(fileinfo.Name(), ".")
+					ext = exts[len(exts) - 1]
+				}else {
+					ext = ""
+				}
+			
+				fileinfo_to_append := fileinfo_internal {
+					Name: fileinfo.Name(),
+					Ext: ext,
+					Dir: fileinfo.IsDir()}
+				fileinfo_arr = append(fileinfo_arr, fileinfo_to_append)
+				fmt.Printf("extension: %s\n", ext)
 			}
 
 			topmost_dir_arr := strings.Split(pubdir, "/")
@@ -108,12 +131,12 @@ func main(){
 				
 				dirstruct := struct {
 					Dirname string
-					Filenames []string
+					Filenames []fileinfo_internal
 					Dotdot string
 					Thumbnails bool
 				}{	
 					Dirname: pubdir,
-					Filenames: files_arr,
+					Filenames: fileinfo_arr,
 					Dotdot: dot_dot,
 					Thumbnails: thumbnail_bool}
 
@@ -128,15 +151,15 @@ func main(){
 				}
 
 				tmpl.Execute(w, dirstruct)		
-			}else {
+			}else { // Request is GET
 				dirstruct := struct {
 					Dirname string
-					Filenames []string
+					Filenames []fileinfo_internal
 					Dotdot string
 					Thumbnails bool
 				}{	
 					Dirname: pubdir,
-					Filenames: files_arr,
+					Filenames: fileinfo_arr,
 					Dotdot: dot_dot,
 					Thumbnails: true}
 				
@@ -157,7 +180,7 @@ func main(){
 			//w.Header().Set("Content-Type", "text/plain")
 			//io.WriteString(w, out)
 
-		}else{
+		}else{ // Requested content is a file
 			/*io.WriteString(w, fmt.Sprintf("%s is a file", dir))*/
 			file, err := os.Open(dir)
 			
@@ -183,13 +206,7 @@ func main(){
 		//w.Header().Set("Content-Type", "text/plain")
 		//io.WriteString(w, fmt.Sprintf("Welcome to %s\n", dir))
 
-		
-
 	})
-
-	/*handler.HandleFunc(, func (w http.ResponseWriter, r *http.Request){
-		
-	})*/
 
 	err := http.ListenAndServe(port, handler)
 

@@ -1,12 +1,14 @@
+{{ $filesdir := .Filenames  }}
+
 <!DOCTYPE HTML>
 <html>
-
 	<head>
 		<title>{{ .Dirname }}</title>
 		<style>
 				.title {
 					/*font-family: ;*/
-					
+					border-top: 50px;
+					border-bottom: 50px;
 				}
 			
 				li {
@@ -17,6 +19,11 @@
 					/*text-decoration: none;
 					color: black;*/
 					font-size: 1.1rem;
+				}
+
+				.thumbnail {
+					border-top: 50px;
+					border-bottom: 50px;
 				}
 		</style>
 	</head>
@@ -32,7 +39,7 @@
 			{{else}}
 				<input type="submit" value="Enable Image Thumbnails" />
 				<input type="hidden" id="thumbnails" name="thumbnails" value="true" />
-			{{end }}
+			{{end}}
 		</form>
 		
 		<!-- Display -->
@@ -40,12 +47,51 @@
 		<ul>
 		{{/* }}
 		{{if ne .Dirname "/"}}
-			<li><a class="file" href="/{{.Dotdot}}">..</a></li>
+			<li>
+				<a class="file" href="/{{.Dotdot}}">..</a>
+			</li>
 		{{end}}
 		{{ */}}
-		{{ range .Filenames  }}
-			<li><a class="file" href="{{.}}">{{ .  }}</a></li>
-		{{ end }}
+
+		{{ if .Thumbnails }}
+			{{range $fileindex, $fileinfo := $filesdir }}
+				{{$filename := ""}}
+				{{if $fileinfo.Dir }}
+					{{$filename = (printf "%s/" $fileinfo.Name)}}
+				{{else}}
+					{{$filename = $fileinfo.Name}}
+				{{end}}				
+
+				{{if or ( eq $fileinfo.Ext "png" ) ( eq $fileinfo.Ext "jpg" )}}
+					<li>
+						<a class="link" href="{{$filename}}">
+							<img class="thumbnail" src="{{$filename}}" alt="{{$filename}}" width="250" >
+						</a>
+					</li>
+				{{else}}
+					<li>
+						<a class="link" href="{{$filename}}">
+							<p class="file">{{$filename}}</p>
+						</a>
+					</li>
+				{{end}}
+			{{end}}
+			
+		{{else}}
+			{{range $fileindex, $fileinfo := $filesdir }}
+				{{$filename := ""}}
+				{{if $fileinfo.Dir }}
+					{{$filename = (printf "%s/" $fileinfo.Name)}}
+				{{else}}
+					{{$filename = $fileinfo.Name}}
+				{{end}}	
+							
+				<li>
+					<a class="file" href="{{$filename}}">{{$filename}}</a>
+				</li>
+			{{end}}
+			
+		{{end}}
 		</ul>
 	</body>
 
