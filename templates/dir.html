@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html>
+
+	<head>
+		<title>{{ .Dirname }}</title>
+		<style>
+				.title {
+					/*font-family: ;*/
+					
+				}
+			
+				li {
+					list-style-type: none;
+				}			
+		
+				.file {
+					/*text-decoration: none;
+					color: black;*/
+					font-size: 1.1rem;
+				}
+		</style>
+	</head>
+
+	<body>
+		<h1 class="title"><i>Directory of {{ .Dirname }}</i></h1>
+
+		<!-- Select Layouts  -->
+		<form action="{{.Dirname}}" method="POST">
+			<input type="submit" value="Enable Image Thumbnails" />
+		</form>
+		<!-- Display -->
+
+		<ul>
+		{{/* }}
+		{{if ne .Dirname "/"}}
+			<li><a class="file" href="/{{.Dotdot}}">..</a></li>
+		{{end}}
+		{{ */}}
+		{{ range .Filenames  }}
+			<li><a class="file" href="{{.}}">{{ .  }}</a></li>
+		{{ end }}
+		</ul>
+	</body>
+
+</html>

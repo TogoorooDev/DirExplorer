@@ -26,6 +26,7 @@ func main(){
 
 	handler.HandleFunc("/", func (w http.ResponseWriter, r *http.Request){
 		dir := strings.Replace(r.URL.Path, "/", "", 1)
+		pubdir := strings.TrimPrefix(dir, directory)
 
 		if dir == "" { dir = "/" }
 		dir = directory + dir
@@ -33,16 +34,36 @@ func main(){
 		fileinfo, err := os.Stat(dir)
 
 		if err != nil {
-			fmt.Println(err)
-			w.Header().Set("Content-Type", "text/plain")
-			io.WriteString(w, fmt.Sprintf("File does not exist"))
+			//404
+			fmt.Println(err.Error())
+			fmt.Println("Rendering 404 now...")
+			w.WriteHeader(http.StatusNotFound)
+
+			filestruct := struct {
+				Filename string
+			} {
+				Filename: pubdir}
+			
+			tmpl, _ := template.ParseFiles("templates/404.html")
+			tmpl.Execute(w, filestruct)
+			
 			return
 		}
 
 		if fileinfo.IsDir(){
 			//io.WriteString(w, fmt.Sprintf("%s is a directory", dir))
 
-			pubdir := strings.TrimPrefix(dir, directory)
+			pubdir_ends := pubdir[len(pubdir) - 1]
+
+			fmt.Printf("Dir is %s\nDir ends with: %s\n", pubdir, string(pubdir_ends))
+			/*
+			if string(pubdir_ends) != "/" {
+				redir := string(pubdir + "/")
+				fmt.Printf("Redirecting to %s", redir)
+				http.Redirect(w, r, redir, http.StatusPermanentRedirect)
+				return
+			}
+			*/
 		
 			files, err := ioutil.ReadDir(dir)
 			if err != nil {
@@ -63,15 +84,30 @@ func main(){
 				files_arr = append(files_arr, filename)
 			}
 
+			topmost_dir_arr := strings.Split(pubdir, "/")
+			topmost_dir := topmost_dir_arr[len(topmost_dir_arr) - 1]
+			dot_dot := strings.TrimSuffix(pubdir, topmost_dir + "/")
 			
 			dirstruct := struct {
 				Dirname string
 				Filenames []string
+				Dotdot string
 			}{	
 				Dirname: pubdir,
-				Filenames: files_arr}
+				Filenames: files_arr,
+				Dotdot: dot_dot}
+			
 
-			tmpl, _ := template.ParseFiles("dir.html")
+			tmpl, err := template.ParseFiles("templates/dir.html")
+
+			if err != nil {
+				fmt.Println(err)
+				w.WriteHeader(http.StatusInternalServerError)
+				io.WriteString(w, "Render Error")
+				return
+
+			}
+
 			tmpl.Execute(w, dirstruct)
 
 			//w.Header().Set("Content-Type", "text/plain")
