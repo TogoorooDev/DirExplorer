@@ -4,6 +4,9 @@
 <html>
 	<head>
 		<title>{{ .Dirname }}</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Fileserver serving directory {{.Dirname}}">
 		<style>
 				.title {
 					/*font-family: ;*/
@@ -13,6 +16,8 @@
 			
 				li {
 					list-style-type: none;
+					border-top: 10px;
+					border-bottom: 10px;
 				}			
 		
 				.file {
@@ -21,10 +26,14 @@
 					font-size: 1.1rem;
 				}
 
-				.thumbnail {
+				#submit {
+					font-size: 1.01rem;
+				}
+
+				/*.thumbnail {
 					border-top: 50px;
 					border-bottom: 50px;
-				}
+				}*/
 		</style>
 	</head>
 
@@ -34,10 +43,10 @@
 		<!-- Select Layouts  -->
 		<form action="/{{.Dirname}}" method="POST">
 			{{if .Thumbnails}}
-				<input type="submit" value="Disable Image Thumbnails" />
+				<input type="submit" id="submit" value="Disable Image Thumbnails" />
 				<input type="hidden" id="thumbnails" name="thumbnails" value="false" />
 			{{else}}
-				<input type="submit" value="Enable Image Thumbnails" />
+				<input type="submit" id="submit" value="Enable Image Thumbnails" />
 				<input type="hidden" id="thumbnails" name="thumbnails" value="true" />
 			{{end}}
 		</form>
@@ -87,7 +96,9 @@
 				{{end}}	
 							
 				<li>
-					<a class="file" href="{{$filename}}">{{$filename}}</a>
+					<a class="link" href="{{$filename}}">
+						<p class="file">{{$filename}}</p>
+					</a>
 				</li>
 			{{end}}
 			
