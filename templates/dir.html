@@ -38,15 +38,15 @@
 	</head>
 
 	<body>
-		<h1 class="title"><i>Directory of {{ .Dirname }}</i></h1>
+		<h1 class="title"><i>Directory of /{{ .Dirname }}</i></h1>
 
 		<!-- Select Layouts  -->
 		<form action="/{{.Dirname}}" method="POST">
 			{{if .Thumbnails}}
-				<input type="submit" id="submit" value="Disable Image Thumbnails" />
+				<input type="submit" id="submit" value="List View" />
 				<input type="hidden" id="thumbnails" name="thumbnails" value="false" />
 			{{else}}
-				<input type="submit" id="submit" value="Enable Image Thumbnails" />
+				<input type="submit" id="submit" value="Thumbnail View" />
 				<input type="hidden" id="thumbnails" name="thumbnails" value="true" />
 			{{end}}
 		</form>
@@ -74,13 +74,13 @@
 				{{if or ( eq $fileinfo.Ext "png" ) ( eq $fileinfo.Ext "jpg" )}}
 					<li>
 						<a class="link" href="{{$filename}}">
-							<img class="thumbnail" src="{{$filename}}" alt="{{$filename}}" width="250" >
+							<img class="thumbnail" title="{{$filename}}" src="{{$filename}}" alt="{{$filename}}" width="250" >
 						</a>
 					</li>
 				{{else}}
 					<li>
 						<a class="link" href="{{$filename}}">
-							<p class="file">{{$filename}}</p>
+							<p class="file" title="{{$filename}}">{{$filename}}</p>
 						</a>
 					</li>
 				{{end}}
@@ -97,7 +97,7 @@
 							
 				<li>
 					<a class="link" href="{{$filename}}">
-						<p class="file">{{$filename}}</p>
+						<p class="file" title="{{$filename}}">{{$filename}}</p>
 					</a>
 				</li>
 			{{end}}
