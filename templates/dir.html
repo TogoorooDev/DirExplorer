@@ -10,14 +10,27 @@
 		<style>
 				.title {
 					/*font-family: ;*/
-					border-top: 50px;
-					border-bottom: 50px;
+					/* border-top: 50px; 
+					border-bottom: 50px; */
+				}
+
+				ul {
+					{{if .Thumbnails}}
+						display: flex;
+						flex-direction: row;
+						flex-wrap: wrap;
+
+					{{else}}
+						display: flex;
+						flex-direction: column;
+						flex-wrap: wrap;
+						
+					{{end}}
 				}
 			
 				li {
 					list-style-type: none;
-					border-top: 10px;
-					border-bottom: 10px;
+					display: inline;
 				}			
 		
 				.file {
@@ -30,10 +43,22 @@
 					font-size: 1.01rem;
 				}
 
-				/*.thumbnail {
-					border-top: 50px;
-					border-bottom: 50px;
-				}*/
+				footer {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+				}
+
+				#listing {
+					display: flex;
+					
+				}
+
+				.image-span {
+					display: flex;
+					justify-content: center;
+					align-items: column;
+				}
 		</style>
 	</head>
 
@@ -52,58 +77,79 @@
 		</form>
 		
 		<!-- Display -->
+		<div id="listing">
+			<ul>
+			{{/* }}
+			{{if ne .Dirname "/"}}
+				<li>
+					<a class="file" href="/{{.Dotdot}}">..</a>
+				</li>
+			{{end}}
+			{{ */}}
 
-		<ul>
-		{{/* }}
-		{{if ne .Dirname "/"}}
-			<li>
-				<a class="file" href="/{{.Dotdot}}">..</a>
-			</li>
-		{{end}}
-		{{ */}}
+			{{ if .Thumbnails }}
+				{{range $fileindex, $fileinfo := $filesdir }}
+					{{$filename := ""}}
+					{{if $fileinfo.Dir }}
+						{{$filename = (printf "%s/" $fileinfo.Name)}}
+					{{else}}
+						{{$filename = $fileinfo.Name}}
+					{{end}}				
 
-		{{ if .Thumbnails }}
-			{{range $fileindex, $fileinfo := $filesdir }}
-				{{$filename := ""}}
-				{{if $fileinfo.Dir }}
-					{{$filename = (printf "%s/" $fileinfo.Name)}}
-				{{else}}
-					{{$filename = $fileinfo.Name}}
-				{{end}}				
+					{{if or ( eq $fileinfo.Ext "png" ) ( eq $fileinfo.Ext "jpg" )}}
+						<li>
+							<span class="image-span">
+								<a class="link" href="{{$filename}}">
+									<img class="thumbnail" title="{{$filename}}" src="{{$filename}}" alt="{{$filename}}" height="150" >
+								</a>
+							</span>
+						</li>
+					{{else}}
+						<!--<li>
+							<a class="link" href="{{$filename}}">
+								<p class="file" title="{{$filename}}">{{$filename}}</p>
+							</a>
+						</li>-->
 
-				{{if or ( eq $fileinfo.Ext "png" ) ( eq $fileinfo.Ext "jpg" )}}
-					<li>
-						<a class="link" href="{{$filename}}">
-							<img class="thumbnail" title="{{$filename}}" src="{{$filename}}" alt="{{$filename}}" width="250" >
-						</a>
-					</li>
-				{{else}}
+						<li>
+							<span class="image-span">
+								<a class="link" href="{{$filename}}">1
+									{{if $fileinfo.Dir}}
+										<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/folder.svg" alt="{{$filename}}" height="150" >
+									{{else}}
+										<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/file-icon.svg" alt="{{$filename}}" height="150" >
+									{{end}}
+									
+									<p class="ltext">{{$filename}}</p>
+								</a>	
+							<span>
+						</li>
+					{{end}}
+				{{end}}
+				
+			{{else}}
+				{{range $fileindex, $fileinfo := $filesdir }}
+					{{$filename := ""}}
+					{{if $fileinfo.Dir }}
+						{{$filename = (printf "%s/" $fileinfo.Name)}}
+					{{else}}
+						{{$filename = $fileinfo.Name}}
+					{{end}}	
+								
 					<li>
 						<a class="link" href="{{$filename}}">
 							<p class="file" title="{{$filename}}">{{$filename}}</p>
 						</a>
 					</li>
 				{{end}}
+				
 			{{end}}
-			
-		{{else}}
-			{{range $fileindex, $fileinfo := $filesdir }}
-				{{$filename := ""}}
-				{{if $fileinfo.Dir }}
-					{{$filename = (printf "%s/" $fileinfo.Name)}}
-				{{else}}
-					{{$filename = $fileinfo.Name}}
-				{{end}}	
-							
-				<li>
-					<a class="link" href="{{$filename}}">
-						<p class="file" title="{{$filename}}">{{$filename}}</p>
-					</a>
-				</li>
-			{{end}}
-			
-		{{end}}
-		</ul>
+			</ul>
+		</div>
+
+		<footer>
+			<p>DirExplore</p>
+		</footer>
 	</body>
 
 </html>

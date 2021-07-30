@@ -2,10 +2,6 @@
 
 # Directory to serve
 Dir = "example/"
-# Path of server to host files at
-# / is default. It points / to the directory specificed in dir/
-# (i) "/" will be the value chosen if there is nothing specified (i)
-Path = "/"
 
 # Port to serve on
 # (!) This has to be a string; you must enclose this number in quotes (!)
