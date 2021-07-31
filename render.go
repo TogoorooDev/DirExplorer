@@ -23,7 +23,8 @@ func index_file(file os.FileInfo, out chan fileinfo_internal) {
 	fileinfo_to_append := fileinfo_internal{
 		Name: file.Name(),
 		Ext:  ext,
-		Dir:  file.IsDir()}
+		Dir:  file.IsDir(),
+	}
 
 	out <- fileinfo_to_append
 }
@@ -32,14 +33,14 @@ func render(w http.ResponseWriter, r *http.Request) {
 	//slashless_path := config.Path[1:]
 	dir := strings.Replace(r.URL.Path, "/", "", 1)
 	//dir = strings.TrimPrefix(dir, slashless_path)
-	pubdir := strings.TrimPrefix(dir, config.Dir)
+	pubdir := strings.TrimPrefix(dir, config.Server.Dir)
 
 	//fmt.Printf("dir: %s\npubdir %s\npath %s\n", dir, pubdir, config.Path)
 
 	if dir == "" {
 		dir = "/"
 	}
-	dir = config.Dir + dir
+	dir = config.Server.Dir + dir
 
 	fileinfo, err := os.Stat(dir)
 
@@ -154,7 +155,10 @@ func render(w http.ResponseWriter, r *http.Request) {
 				Filenames:  fileinfo_arr,
 				Dotdot:     dot_dot,
 				Thumbnails: thumbnail_bool,
-				Path:       "/"}
+				Path:       "/",
+				Header:     config.Header,
+				Footer:     config.Footer,
+			}
 
 			tmpl, err := template.ParseFiles("templates/dir.html")
 
@@ -188,7 +192,10 @@ func render(w http.ResponseWriter, r *http.Request) {
 				Filenames:  fileinfo_arr,
 				Dotdot:     dot_dot,
 				Thumbnails: thumbnail_bool,
-				Path:       "/"}
+				Path:       "/",
+				Header:     config.Header,
+				Footer:     config.Footer,
+			}
 
 			tmpl, err := template.ParseFiles("templates/dir.html")
 

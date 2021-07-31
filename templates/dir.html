@@ -8,36 +8,36 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="description" content="Fileserver serving directory {{.Dirname}}">
 		<style>
-				.title {
-					/*font-family: ;*/
-					/* border-top: 50px; 
-					border-bottom: 50px; */
+				#content {
+					/*height: calc(100vh - 3rem);*/
+				}
+			
+				.header {
+					display: flex;
+					flex-flow: column wrap;
+					justify-content: center;
+					align-items: center;
 				}
 
+				.header > * {
+					margin: -0.05rem;
+				}
+		
 				ul {
 					{{if .Thumbnails}}
 						display: flex;
-						flex-direction: row;
-						flex-wrap: wrap;
+						flex-flow: row wrap;
 
 					{{else}}
 						display: flex;
-						flex-direction: column;
-						flex-wrap: wrap;
+						flex-flow: column wrap;
 						
 					{{end}}
 				}
 			
 				li {
 					list-style-type: none;
-					display: inline;
 				}			
-		
-				.file {
-					/*text-decoration: none;
-					color: black;*/
-					font-size: 1.1rem;
-				}
 
 				#submit {
 					font-size: 1.01rem;
@@ -48,108 +48,163 @@
 					justify-content: center;
 					align-items: center;
 				}
-
-				#listing {
-					display: flex;
-					
-				}
-
+				
 				.image-span {
 					display: flex;
 					justify-content: center;
 					align-items: column;
 				}
+
+				.thumbnail {
+					height: 125px;
+					width: auto;
+				}
+
+				@media screen and (max-width: 992px){
+					.thumbnail {
+						height: 100px;
+						width: auto;
+					}
+				}
+
+				@media screen and (max-width: 600px){
+					.thumbnail {
+						height: 75px;
+						width: auto;
+					}
+				}
+
+				.ltext {
+					text-align: center;
+					color: black;
+				}
+
+				.file {
+					color: black;
+					font-size: 1.1rem;
+				}
+
+				.link {
+					text-decoration: none;
+					
+				}
+
+				.footer { 
+					display: flex; 
+					flex-flow: column wrap;
+					align-items: center;
+				} 
+
+				.footer > * {
+					margin: -0.5rem;
+				}
+				
 		</style>
 	</head>
 
 	<body>
-		<h1 class="title"><i>Directory of /{{ .Dirname }}</i></h1>
+		<div id="content">
+			{{if .Header.Show}}
+				<span class="header">
+					<h1 id="header-text">{{.Header.Text}}</h1>
 
-		<!-- Select Layouts  -->
-		<form action="/{{.Dirname}}" method="POST">
-			{{if .Thumbnails}}
-				<input type="submit" id="submit" value="List View" />
-				<input type="hidden" id="thumbnails" name="thumbnails" value="false" />
-			{{else}}
-				<input type="submit" id="submit" value="Thumbnail View" />
-				<input type="hidden" id="thumbnails" name="thumbnails" value="true" />
+					<h3 id="header-subtext">{{.Header.Subtext}}</h3>
+				</span>
 			{{end}}
-		</form>
-		
-		<!-- Display -->
-		<div id="listing">
-			<ul>
-			{{/* }}
-			{{if ne .Dirname "/"}}
-				<li>
-					<a class="file" href="/{{.Dotdot}}">..</a>
-				</li>
-			{{end}}
-			{{ */}}
 
-			{{ if .Thumbnails }}
-				{{range $fileindex, $fileinfo := $filesdir }}
-					{{$filename := ""}}
-					{{if $fileinfo.Dir }}
-						{{$filename = (printf "%s/" $fileinfo.Name)}}
-					{{else}}
-						{{$filename = $fileinfo.Name}}
-					{{end}}				
+			<h1 class="title"><i>Directory of /{{ .Dirname }}</i></h1>
 
-					{{if or ( eq $fileinfo.Ext "png" ) ( eq $fileinfo.Ext "jpg" )}}
-						<li>
-							<span class="image-span">
+			<!-- Select Layouts  -->
+			<form action="/{{.Dirname}}" method="POST">
+				{{if .Thumbnails}}
+					<input type="submit" id="submit" value="List View" />
+					<input type="hidden" id="thumbnails" name="thumbnails" value="false" />
+				{{else}}
+					<input type="submit" id="submit" value="Thumbnail View" />
+					<input type="hidden" id="thumbnails" name="thumbnails" value="true" />
+				{{end}}
+			</form>
+			
+			<!-- Display -->
+			<span id="listing">
+				<ul>
+				{{/* }}
+				{{if ne .Dirname "/"}}
+					<li>
+						<a class="file" href="/{{.Dotdot}}">..</a>
+					</li>
+				{{end}}
+				{{ */}}
+
+				{{ if .Thumbnails }}
+					{{range $fileindex, $fileinfo := $filesdir }}
+						{{$filename := ""}}
+						{{if $fileinfo.Dir }}
+							{{$filename = (printf "%s/" $fileinfo.Name)}}
+						{{else}}
+							{{$filename = $fileinfo.Name}}
+						{{end}}				
+
+						{{if or ( eq $fileinfo.Ext "png" ) ( eq $fileinfo.Ext "jpg" )}}
+							<li>
+								<span class="image-span">
+									<a class="link" href="{{$filename}}">
+										<img class="thumbnail" title="{{$filename}}" src="{{$filename}}" alt="{{$filename}}" >
+										<p class="ltext">{{$filename}}</p>
+									</a>
+								</span>
+							</li>
+						{{else}}
+							<!--<li>
 								<a class="link" href="{{$filename}}">
-									<img class="thumbnail" title="{{$filename}}" src="{{$filename}}" alt="{{$filename}}" height="150" >
+									<p class="file" title="{{$filename}}">{{$filename}}</p>
 								</a>
-							</span>
-						</li>
-					{{else}}
-						<!--<li>
+							</li>-->
+
+							<li>
+								<span class="image-span">
+									<a class="link" href="{{$filename}}">
+										{{if $fileinfo.Dir}}
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/folder.svg" alt="{{$filename}}" >
+										{{else}}
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/file-icon.svg" alt="{{$filename}}" >
+										{{end}}
+										
+										<p class="ltext">{{$filename}}</p>
+									</a>	
+								<span>
+							</li>
+						{{end}}
+					{{end}}
+					
+				{{else}}
+					{{range $fileindex, $fileinfo := $filesdir }}
+						{{$filename := ""}}
+						{{if $fileinfo.Dir }}
+							{{$filename = (printf "%s/" $fileinfo.Name)}}
+						{{else}}
+							{{$filename = $fileinfo.Name}}
+						{{end}}	
+									
+						<li>
 							<a class="link" href="{{$filename}}">
 								<p class="file" title="{{$filename}}">{{$filename}}</p>
 							</a>
-						</li>-->
-
-						<li>
-							<span class="image-span">
-								<a class="link" href="{{$filename}}">1
-									{{if $fileinfo.Dir}}
-										<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/folder.svg" alt="{{$filename}}" height="150" >
-									{{else}}
-										<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/file-icon.svg" alt="{{$filename}}" height="150" >
-									{{end}}
-									
-									<p class="ltext">{{$filename}}</p>
-								</a>	
-							<span>
 						</li>
 					{{end}}
+					
 				{{end}}
-				
-			{{else}}
-				{{range $fileindex, $fileinfo := $filesdir }}
-					{{$filename := ""}}
-					{{if $fileinfo.Dir }}
-						{{$filename = (printf "%s/" $fileinfo.Name)}}
-					{{else}}
-						{{$filename = $fileinfo.Name}}
-					{{end}}	
-								
-					<li>
-						<a class="link" href="{{$filename}}">
-							<p class="file" title="{{$filename}}">{{$filename}}</p>
-						</a>
-					</li>
-				{{end}}
-				
-			{{end}}
-			</ul>
+				</ul>
+			</span>
+
 		</div>
 
-		<footer>
-			<p>DirExplore</p>
-		</footer>
+		{{if .Footer.Show}}
+			<span class="footer">
+				<p>{{.Footer.Text}}</p>
+				<a href="{{.Footer.Link.Href}}"><p>{{.Footer.Link.Text}}</p></a>
+			</span>
+		{{end}}
 	</body>
 
 </html>

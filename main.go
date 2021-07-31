@@ -56,7 +56,7 @@ func main() {
 		return
 	}
 
-	if config.Dir == "" {
+	if config.Server.Dir == "" {
 		panic("FATAL: Directory not specified in config.toml")
 	}
 
@@ -70,7 +70,7 @@ func main() {
 	handler.HandleFunc("/", render)
 	handler.HandleFunc("/sysreserved-static/icons-svg/", static_svg)
 
-	err = http.ListenAndServe(":"+config.Port, session.Enable(handler))
+	err = http.ListenAndServe(":"+config.Server.Port, session.Enable(handler))
 
 	if err != nil {
 		fmt.Println(err.Error())
