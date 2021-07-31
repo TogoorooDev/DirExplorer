@@ -24,7 +24,7 @@ Subtext = "Welcome to the NYXNET"
 
 Show = true
 
-Text = "DirExplorer IA1"
+Text = "DirExplorer PA1"
 
 [Footer.Link]
 Text = "Source"
