@@ -1,12 +1,18 @@
 package main
 
 import (
-	//"errors"
+	// "encoding/json"
+	// "errors"
+	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
+	//"github.com/fsnotify/fsnotify"
 )
+
+//func init_notify_
 
 func index_file(file os.FileInfo, out chan fileinfo_internal) {
 	var ext string
@@ -24,6 +30,38 @@ func index_file(file os.FileInfo, out chan fileinfo_internal) {
 	}
 
 	out <- fileinfo_to_append
+}
+
+func cache() error {
+	var dirs []string
+	var dir_cache cached_dir
+	err := filepath.Walk(config.Server.Dir, func(pathX string, infoX os.FileInfo, errX error) error {
+		if errX != nil {
+			return errX
+		}
+
+		path := strings.TrimPrefix(pathX, config.Server.Dir)
+
+		// if path == "" {
+		// path = "/"
+		// }
+
+		if infoX.IsDir() {
+			dirs = append(dirs, path)
+		}
+
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Println(dirs)
+
+	for _, dir := range dirs {
+
+	}
+
+	return nil
 }
 
 func index_dir(dir string) ([]fileinfo_internal, error) {
@@ -72,6 +110,7 @@ func index_dir(dir string) ([]fileinfo_internal, error) {
 
 }
 
-/*func load_dir(dir string) ([]fileinfo_internal, error) {
-
-}*/
+func load_dir(dir string) ([]fileinfo_internal, error) {
+	cache()
+	return index_dir(dir)
+}

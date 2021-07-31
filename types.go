@@ -1,5 +1,14 @@
 package main
 
+type cache_struct struct {
+	Cache []cached_dir
+}
+
+type cached_dir struct {
+	Name  string
+	Files []fileinfo_internal
+}
+
 type dir_struct struct {
 	Dirname    string
 	Filenames  []fileinfo_internal

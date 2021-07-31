@@ -70,7 +70,7 @@ func render(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		fileinfo_arr, err := index_dir(dir)
+		fileinfo_arr, err := load_dir(dir)
 		if err != nil {
 			fmt.Println(err)
 			w.Header().Set("Content-Type", "text/plain")
