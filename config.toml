@@ -13,7 +13,7 @@ Port = "8080"
 # Settings past this point can be changed live
 [Header]
 
-# Show the header of not
+# Show the header or not
 Show = true
 
 # Main text (title)

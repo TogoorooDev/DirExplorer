@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+  "path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -21,7 +23,7 @@ func render(w http.ResponseWriter, r *http.Request) {
 	if dir == "" {
 		dir = "/"
 	}
-	dir = config.Server.Dir + dir
+	dir = filepath.Join(config.Server.Dir, dir)
 
 	fileinfo, err := os.Stat(dir)
 
