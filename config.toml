@@ -13,20 +13,20 @@ Port = "8080"
 # Settings past this point can be changed live
 [Header]
 
-# Show the header or not
+# Show the header of not
 Show = true
 
 # Main text (title)
-Text = "NYXNET"
+Text = "Nyxnet"
 
 # Subtext 
-Subtext = "Welcome to the NYXNET"
+Subtext = "Welcome to the Nyxnet"
 
 [Footer]
 
 Show = true
 
-Text = "DirExplorer PA1"
+Text = "DirExplorer IA2"
 
 [Footer.Link]
 Text = "Source"
@@ -39,4 +39,4 @@ Href = "https://github.com/TogoorooDev/DirExplorer"
 [Caching.Filenames]
 
 #Self Explanitory
-Enable = true
+Enable = false

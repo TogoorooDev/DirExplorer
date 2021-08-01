@@ -7,8 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-  "path/filepath"
-	"sort"
+	"path/filepath"
 	"strings"
 )
 

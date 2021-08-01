@@ -41,9 +41,9 @@ func cache() error {
 
 		path := strings.TrimPrefix(pathX, config.Server.Dir)
 
-		// if path == "" {
-		// path = "/"
-		// }
+		if path == "" {
+			path = "/"
+		}
 
 		if infoX.IsDir() {
 			dirs = append(dirs, path)
@@ -151,12 +151,15 @@ func index_dir(dir string) ([]fileinfo_internal, error) {
 }
 
 func load_dir(dir string) ([]fileinfo_internal, error) {
+	if dir == "" {
+		dir = "/"
+	}
 	if config.Caching.Filenames.Enable {
 		ret, ok := filenames_cache.Cache[dir]
 		if ok {
 			return ret.Files, nil
 		} else {
-			return nil, errors.New("Directoty not found")
+			return nil, errors.New("Directory not found")
 		}
 	} else {
 		return index_dir(dir)
