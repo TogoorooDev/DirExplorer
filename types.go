@@ -1,11 +1,10 @@
 package main
 
 type cache_struct struct {
-	Cache []cached_dir
+	Cache map[string]cached_dir
 }
 
 type cached_dir struct {
-	Name  string
 	Files []fileinfo_internal
 }
 
@@ -47,10 +46,20 @@ type header struct {
 	Subtext string
 }
 
+type cache_type struct {
+	Enable bool
+	//In_Memory bool
+}
+
+type caching struct {
+	Filenames cache_type
+}
+
 type config_format struct {
-	Server server
-	Header header
-	Footer footer
+	Server  server
+	Header  header
+	Footer  footer
+	Caching caching
 }
 
 type fileinfo_internal struct {

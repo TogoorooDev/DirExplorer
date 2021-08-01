@@ -1,9 +1,8 @@
 package main
 
 import (
-	// "encoding/json"
-	// "errors"
-	"fmt"
+	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -34,7 +33,7 @@ func index_file(file os.FileInfo, out chan fileinfo_internal) {
 
 func cache() error {
 	var dirs []string
-	var dir_cache cached_dir
+	var dir_cache cache_struct
 	err := filepath.Walk(config.Server.Dir, func(pathX string, infoX os.FileInfo, errX error) error {
 		if errX != nil {
 			return errX
@@ -55,10 +54,51 @@ func cache() error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(dirs)
+
+	//var files_arr []fileinfo_internal
 
 	for _, dir := range dirs {
+		var container cached_dir
 
+		true_dir := filepath.Join(config.Server.Dir, dir)
+		files, err := ioutil.ReadDir(true_dir)
+
+		if err != nil {
+			return err
+		}
+
+		files_chan := make(chan fileinfo_internal)
+		var count int
+
+		for _, file := range files {
+			go index_file(file, files_chan)
+			count++
+		}
+
+		for count > 0 {
+			//fmt.Println(count)
+			container.Files = append(container.Files, <-files_chan)
+			count--
+		}
+
+		if this_cache, ok := dir_cache.Cache[dir]; ok {
+			this_cache = container
+			dir_cache.Cache[dir] = this_cache
+		}
+
+		//dir_cache.Cache[dir].Files = append(dir_cache.Cache[dir].Files, container)
+	}
+
+	filenames_cache = dir_cache
+
+	out, err := json.Marshal(dir_cache)
+	if err != nil {
+		return err
+	}
+
+	err = ioutil.WriteFile("index.json", out, 0644)
+	if err != nil {
+		return err
 	}
 
 	return nil
@@ -111,6 +151,14 @@ func index_dir(dir string) ([]fileinfo_internal, error) {
 }
 
 func load_dir(dir string) ([]fileinfo_internal, error) {
-	cache()
-	return index_dir(dir)
+	if config.Caching.Filenames.Enable {
+		ret, ok := filenames_cache.Cache[dir]
+		if ok {
+			return ret.Files, nil
+		} else {
+			return nil, errors.New("Directoty not found")
+		}
+	} else {
+		return index_dir(dir)
+	}
 }
