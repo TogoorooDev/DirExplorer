@@ -7,21 +7,22 @@ import (
 	"strings"
 	"time"
 
+	// "github.com/fsnotify/fsnotify"
 	"github.com/golangcollege/sessions"
 	"github.com/pelletier/go-toml/v2"
 )
 
+// Globals:
+
 // Config
-/*var directory string
-var path string
-var port string*/
 var config config_format
 
 // Session
 var session *sessions.Session
 var secret = []byte("u46IpCV9y5Vlur8YvODJEhgOY8m9JVE4")
 
-// func static_svg(w http.ResponseWriter, r *http.Request)
+// Cacheing
+var filenames_cache cache_struct
 
 func static_svg(w http.ResponseWriter, r *http.Request) {
 
@@ -33,10 +34,12 @@ func static_svg(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	fmt.Println("Starting initlization process")
+	fmt.Println("Reading config file")
 
 	config_file_handle, err := os.Open("config.toml")
 	if err != nil {
-		fmt.Printf("Cannot read config.toml: %s", err.Error())
+		fmt.Printf("Cannot open config.toml: %s", err.Error())
 		return
 	}
 	config_file_data_raw := make([]byte, 10000)
@@ -57,7 +60,14 @@ func main() {
 	}
 
 	if config.Server.Dir == "" {
-		panic("FATAL: Directory not specified in config.toml")
+		fmt.Println("FATAL: Directory not specified in config.toml")
+	}
+
+	if config.Caching.Filenames.Enable {
+		err := cache()
+		if err != nil {
+			config.Caching.Filenames.Enable = false
+		}
 	}
 
 	//fmt.Printf("Directory: %s\nPath %s\nPort %s\n", directory, path, port)
@@ -76,3 +86,14 @@ func main() {
 		fmt.Println(err.Error())
 	}
 }
+
+// func watch_config() {
+// watcher, err := fsnotify.NewWatcher()
+// if err != nil {
+// fmt.Printf("Error initilazing watcher. ")
+// }
+// }
+//
+// func watch_thread() {
+//
+// }
