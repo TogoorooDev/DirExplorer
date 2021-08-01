@@ -11,7 +11,7 @@ Port = "8080"
 
 [Header]
 
-# Show the header of not
+# Show the header or not
 Show = true
 
 # Main text (title)
