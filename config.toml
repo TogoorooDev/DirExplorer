@@ -1,5 +1,7 @@
 # Configuration file for DirExplorer
 
+# After initilization, these settings cannot be changed without 
+# a program restart
 [Server]
 # Directory to serve
 Dir = "example/"
@@ -8,7 +10,7 @@ Dir = "example/"
 # (!) This has to be a string; you must enclose this number in quotes (!)
 Port = "8080"
 
-
+# Settings past this point can be changed live
 [Header]
 
 # Show the header or not
@@ -24,16 +26,17 @@ Subtext = "Welcome to the NYXNET"
 
 Show = true
 
-Text = "DirExplorer IA1"
+Text = "DirExplorer PA1"
 
 [Footer.Link]
 Text = "Source"
-Href = "https://github.com/TogooroDev/DirExplorer"
+Href = "https://github.com/TogoorooDev/DirExplorer"
 
-#[Footer.Link]
-#Text = "License"
-#Href = "https://www.gnu.org/licenses/agpl-3.0.en.html"
+# If you don't know what these settings do, leave them alone
+[Caching]
 
-#[Footer.Link]
-#Text = "Home Page"
-#Href = "/"
+#Settings for filename caching
+[Caching.Filenames]
+
+#Self Explanitory
+Enable = true
