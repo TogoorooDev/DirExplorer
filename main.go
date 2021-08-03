@@ -4,30 +4,23 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/golangcollege/sessions"
 )
 
-// Globals:
-
-// Config
-var config config_format
-
-// Session
-var session *sessions.Session
-var secret = []byte("u46IpCV9y5Vlur8YvODJEhgOY8m9JVE4")
-
-// Cacheing
-var filenames_cache cache_struct
-
-// Mutex
-var config_lock sync.Mutex
+func contains(container []string, containee string) bool {
+	for _, a := range container {
+		if a == containee {
+			return true
+		}
+	}
+	return false
+}
 
 func static_svg(w http.ResponseWriter, r *http.Request) {
 
-	file_name := strings.Replace(r.URL.Path, "/sysreserved-static/icons-svg", "", 1)
+	file_name := strings.Replace(r.URL.Path, "/sysreserved-static/svg", "", 1)
 
 	w.Header().Set("Content-Type", "image/svg+xml")
 	http.ServeFile(w, r, "static/icons-svg/"+file_name)
@@ -50,7 +43,9 @@ func main() {
 	handler := http.NewServeMux()
 
 	handler.HandleFunc("/", render)
-	handler.HandleFunc("/sysreserved-static/icons-svg/", static_svg)
+	handler.HandleFunc("/sysreserved-static/svg/", static_svg)
+	//handler.HandleFunc("/sysreserved-static/cache", cache_handler)
+	handler.HandleFunc("/favicon.ico", favicon)
 
 	err := http.ListenAndServe(":"+config.Server.Port, session.Enable(handler))
 

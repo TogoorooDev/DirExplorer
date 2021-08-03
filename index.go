@@ -8,13 +8,14 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	//"github.com/fsnotify/fsnotify"
 )
 
 //func init_notify_
 
 func index_file(file os.FileInfo, out chan fileinfo_internal) {
 	var ext string
+	var ftype string
+
 	if strings.Contains(file.Name(), ".") {
 		exts := strings.Split(file.Name(), ".")
 		ext = exts[len(exts)-1]
@@ -22,10 +23,25 @@ func index_file(file os.FileInfo, out chan fileinfo_internal) {
 		ext = ""
 	}
 
+	if contains(image_ext, ext) {
+		ftype = "image"
+	} else if contains(video_ext, ext) {
+		ftype = "video"
+	} else if contains(audio_ext, ext) {
+		ftype = "audio"
+	} else if contains(text_ext, ext) {
+		ftype = "text"
+	} else if contains(binary_ext, ext) {
+		ftype = "binary"
+	} else {
+		ftype = "generic"
+	}
+
 	fileinfo_to_append := fileinfo_internal{
 		Name: file.Name(),
 		Ext:  ext,
 		Dir:  file.IsDir(),
+		Type: ftype,
 	}
 
 	out <- fileinfo_to_append

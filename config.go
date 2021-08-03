@@ -44,7 +44,7 @@ func watch_config() {
 
 	err = watcher.Add(".")
 	if err != nil {
-		fmt.Printf("Cannot watch config.toml. The program will still run, just without automatic config updates.")
+		fmt.Printf("Cannot watch config.toml. The program will still run, just without automatic config updates.\n")
 	}
 	<-done
 }

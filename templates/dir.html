@@ -145,11 +145,17 @@
 							{{$filename = $fileinfo.Name}}
 						{{end}}				
 
-						{{if or ( eq $fileinfo.Ext "png" ) ( eq $fileinfo.Ext "jpg" )}}
+						{{if eq $fileinfo.Type "image" }}
 							<li>
 								<span class="image-span">
 									<a class="link" href="{{$filename}}">
-										<img class="thumbnail" title="{{$filename}}" src="{{$filename}}" alt="{{$filename}}" >
+										<picture>
+											<source srcset="{{$filename}}">
+											<source srcset="/sysreserved-static/svg/image.svg">
+
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/image.svg" alt="{{$filename}}" >
+											
+										</picture>
 										<p class="ltext">{{$filename}}</p>
 									</a>
 								</span>
@@ -165,9 +171,17 @@
 								<span class="image-span">
 									<a class="link" href="{{$filename}}">
 										{{if $fileinfo.Dir}}
-											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/folder.svg" alt="{{$filename}}" >
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/folder.svg" alt="{{$filename}}" >
+										{{else if eq $fileinfo.Type "video"}}
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/vid1.svg" alt="{{$filename}}" >
+										{{else if eq $fileinfo.Type "audio"}}
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/audio.svg" alt="{{$filename}}" >					
+										{{else if eq $fileinfo.Type "text"}}
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/text.svg" alt="{{$filename}}" >											
+										{{else if eq $fileinfo.Type "binary"}}
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/exe.svg" alt="{{$filename}}" >
 										{{else}}
-											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/icons-svg/file-icon.svg" alt="{{$filename}}" >
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/file.svg" alt="{{$filename}}" >
 										{{end}}
 										
 										<p class="ltext">{{$filename}}</p>

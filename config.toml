@@ -10,6 +10,9 @@ Dir = "example/"
 # (!) This has to be a string; you must enclose this number in quotes (!)
 Port = "8080"
 
+# This must be a .ico file
+Favicon = "static/default-favicon.ico"
+
 # Settings past this point can be changed live
 [Header]
 

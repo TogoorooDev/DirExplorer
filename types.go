@@ -19,8 +19,9 @@ type dir_struct struct {
 }
 
 type server struct {
-	Dir  string
-	Port string
+	Dir     string
+	Port    string
+	Favicon string
 }
 
 type link struct {
@@ -66,4 +67,5 @@ type fileinfo_internal struct {
 	Name string
 	Ext  string
 	Dir  bool
+	Type string
 }

@@ -11,6 +11,11 @@ import (
 	"strings"
 )
 
+func favicon(w http.ResponseWriter, r *http.Request) {
+	//io.Stat(config.Server.Favicon)
+	http.ServeFile(w, r, config.Server.Favicon)
+}
+
 func render(w http.ResponseWriter, r *http.Request) {
 	//slashless_path := config.Path[1:]
 	dir := strings.Replace(r.URL.Path, "/", "", 1)
