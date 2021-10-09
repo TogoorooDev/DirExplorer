@@ -1,6 +1,5 @@
 {{ $filesdir := .Filenames  }}
 
-
 <!DOCTYPE HTML>
 <html>
 	<head>
@@ -81,12 +80,13 @@
 				}
 
 				.file {
-					text-decoration: underline;
+					color: black;
 					font-size: 1.1rem;
 				}
 
 				.link {
-					margin-top: 1rem;
+					text-decoration: none;
+					
 				}
 
 				.footer { 
@@ -97,10 +97,6 @@
 
 				.footer > * {
 					margin: -0.5rem;
-				}
-
-				.file-li {
-					margin: 0.3rem;
 				}
 				
 		</style>
@@ -126,7 +122,6 @@
 
 			<!-- Select Layouts  -->
 			<form action="/{{.Dirname}}" method="POST">
-			  <input type="hidden" id="type" name="type" value="thumbnailstat" />
 				{{if .Thumbnails}}
 					<input type="submit" id="submit" value="List View" />
 					<input type="hidden" id="thumbnails" name="thumbnails" value="false" />
@@ -186,9 +181,9 @@
 										{{else if eq $fileinfo.Type "video"}}
 											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/vid1.svg" alt="{{$filename}}" >
 										{{else if eq $fileinfo.Type "audio"}}
-											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/audio.svg" alt="{{$filename}}" >
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/audio.svg" alt="{{$filename}}" >					
 										{{else if eq $fileinfo.Type "text"}}
-											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/text.svg" alt="{{$filename}}" >
+											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/text.svg" alt="{{$filename}}" >											
 										{{else if eq $fileinfo.Type "binary"}}
 											<img class="thumbnail" title="{{$filename}}" src="/sysreserved-static/svg/exe.svg" alt="{{$filename}}" >
 										{{else}}
@@ -211,9 +206,9 @@
 							{{$filename = $fileinfo.Name}}
 						{{end}}	
 									
-						<li class="file-li">
+						<li>
 							<a class="link" href="{{$filename}}">
-								{{$filename}}
+								<p class="file" title="{{$filename}}">{{$filename}}</p>
 							</a>
 						</li>
 					{{end}}

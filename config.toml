@@ -20,10 +20,10 @@ Favicon = "static/default-favicon.ico"
 Show = true
 
 # Main text (title)
-Text = "Nyxnet"
+Text = "Cats"
 
 # Subtext 
-Subtext = "Welcome to the Nyxnet"
+Subtext = "Cat Files!"
 
 [Footer]
 

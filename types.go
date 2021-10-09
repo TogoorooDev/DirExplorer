@@ -8,6 +8,11 @@ type cached_dir struct {
 	Files []fileinfo_internal
 }
 
+type search_results_struct struct {
+	dir_struct
+	Query string
+}
+
 type dir_struct struct {
 	Dirname    string
 	Filenames  []fileinfo_internal

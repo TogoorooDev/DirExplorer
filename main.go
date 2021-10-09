@@ -25,6 +25,7 @@ func static_svg(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "image/svg+xml")
 	http.ServeFile(w, r, "static/icons-svg/"+file_name)
 	//w.WriteHeader(200)
+	
 }
 
 func main() {

@@ -16,6 +16,10 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, config.Server.Favicon)
 }
 
+/*func search(w http.RepsonseWriter, r *http.Request) {
+	
+        }*/
+
 func render(w http.ResponseWriter, r *http.Request) {
 	//slashless_path := config.Path[1:]
 	dir := strings.Replace(r.URL.Path, "/", "", 1)
@@ -86,22 +90,24 @@ func render(w http.ResponseWriter, r *http.Request) {
 		topmost_dir_arr := strings.Split(pubdir, "/")
 		topmost_dir := topmost_dir_arr[len(topmost_dir_arr)-1]
 		dot_dot := strings.TrimSuffix(pubdir, topmost_dir+"/")
-
+		
 		if r.Method == "POST" {
 			r.ParseForm()
-			thumbnail_string := r.FormValue("thumbnails")
+			form_type := r.FormValue("type")
+			if form_type == "thumbnailstat" {
+				fmt.Println("Thumbnail updating!1!")
+				fmt.Println(r.FormValue("thumbnails"))
+				thumbnail_bool := r.FormValue("thumbnails") == "true"
+				session.Put(r, "thumbnail", thumbnail_bool)
 
-			session.Put(r, "thumbnail", thumbnail_string)
+			}else if form_type == "search" {
+				
+			}
 
 			//fmt.Printf("thumbnail_bool: %s\n", thumbnail_bool)
-			var thumbnail_bool bool
-			if thumbnail_string == "false" {
-				thumbnail_bool = false
-			} else {
-				thumbnail_bool = true
-			}
+			
 
-			dirstruct := dir_struct{
+			/* dirstruct := dir_struct{
 				Dirname:    pubdir,
 				Filenames:  fileinfo_arr,
 				Dotdot:     dot_dot,
@@ -121,46 +127,37 @@ func render(w http.ResponseWriter, r *http.Request) {
 
 			}
 
-			tmpl.Execute(w, dirstruct)
+			tmpl.Execute(w, dirstruct) */
 		} else { // Request is GET
 
-			thumbnail_string := session.GetString(r, "thumbnail")
-
-			if thumbnail_string == "" {
-				thumbnail_string = "true"
-			}
-
-			var thumbnail_bool bool
-
-			if thumbnail_string == "true" {
-				thumbnail_bool = true
-			} else {
-				thumbnail_bool = false
-			}
-			var dirstruct dir_struct
-			dirstruct = dir_struct{
-				Dirname:    pubdir,
-				Filenames:  fileinfo_arr,
-				Dotdot:     dot_dot,
-				Thumbnails: thumbnail_bool,
-				Path:       "/",
-				Header:     config.Header,
-				Footer:     config.Footer,
-			}
-
-			tmpl, err := template.ParseFiles("templates/dir.html")
-
-			if err != nil {
-				fmt.Println(err)
-				w.WriteHeader(http.StatusInternalServerError)
-				io.WriteString(w, "Render Error")
-				return
-
-			}
-
-			tmpl.Execute(w, dirstruct)
+			
+		}
+		
+		thumbnail_bool := session.GetBool(r, "thumbnail")
+		
+		
+		var dirstruct dir_struct
+		dirstruct = dir_struct{
+			Dirname:    pubdir,
+			Filenames:  fileinfo_arr,
+			Dotdot:     dot_dot,
+			Thumbnails: thumbnail_bool,
+			Path:       "/",
+			Header:     config.Header,
+			Footer:     config.Footer,
 		}
 
+		tmpl, err := template.ParseFiles("templates/dir.html")
+
+		if err != nil {
+			fmt.Println(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			io.WriteString(w, "Render Error")
+			return
+
+		}
+		tmpl.Execute(w, dirstruct)
+		
 		//w.Header().Set("Content-Type", "text/plain")
 		//io.WriteString(w, out)
 
